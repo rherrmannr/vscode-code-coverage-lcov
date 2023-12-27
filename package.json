@@ -21,7 +21,22 @@
         "command": "code-coverage-lcov.hide",
         "title": "Code Coverage LCOV: Hide"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Code Coverage Highlighting",
+      "properties": {
+        "code-coverage-highlighting.covered": {
+          "type": "string",
+          "default": "rgba(144, 238, 144, 0.2)",
+          "description": "Specifies the color for covered lines."
+        },
+        "code-coverage-highlighting.uncovered": {
+          "type": "string",
+          "default": "rgba(255, 0, 0, 0.2)",
+          "description": "Specifies the color for uncovered lines."
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

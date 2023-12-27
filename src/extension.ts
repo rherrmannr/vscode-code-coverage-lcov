@@ -70,12 +70,30 @@ function watchReportChange(filePath: string): void {
 }
 
 async function applyCoverage(path: string) {
-  //process the data here
+  const config = vscode.workspace.getConfiguration(
+    "code-coverage-highlighting"
+  );
+
+  const coveredColor: string | undefined = config.get("covered");
+  const uncoveredColor: string | undefined = config.get("uncovered");
+
+  if (!coveredColor || !uncoveredColor) {
+    console.error(
+      "Unable to highlighting colors. covered: {}, uncovored: {}",
+      coveredColor,
+      uncoveredColor
+    );
+    return;
+  }
+
   const files = await vscode.workspace.findFiles("**/*");
+  files.forEach((file) => {
+    console.log(file);
+  });
   removeUsedDecorationTypes(files).then(() => {
     readLcovFile(path).then((lcov) => {
-      createDecorationTypes(lcov);
-      applyDecorationTypes(files);
+      createDecorationTypes(lcov, coveredColor, uncoveredColor);
+      applyDecorationTypes(files, coveredColor, uncoveredColor);
     });
   });
 }
@@ -85,23 +103,31 @@ async function removeUsedDecorationTypes(files: vscode.Uri[]) {
     return;
   }
   let openTextDocumentPromises = files.map(async (file) => {
-    const document = await vscode.workspace.openTextDocument(file);
-    vscode.window.visibleTextEditors
-      .filter((editor) => editor.document === document)
-      .forEach((editor) => {
-        let traceDecorationTypeMap = filePathMap.get(document.fileName);
-        if (traceDecorationTypeMap) {
-          traceDecorationTypeMap.forEach((decorationType) => {
-            editor.setDecorations(decorationType, []);
-          });
-        }
-      });
+    try {
+      const document = await vscode.workspace.openTextDocument(file);
+      vscode.window.visibleTextEditors
+        .filter((editor) => editor.document === document)
+        .forEach((editor) => {
+          let traceDecorationTypeMap = filePathMap.get(document.fileName);
+          if (traceDecorationTypeMap) {
+            traceDecorationTypeMap.forEach((decorationType) => {
+              editor.setDecorations(decorationType, []);
+            });
+          }
+        });
+    } catch (e) {
+      console.error("unable to open file {}. Exception: ", file, e);
+    }
   });
   await Promise.all(openTextDocumentPromises);
   filePathMap.clear();
 }
 
-function createDecorationTypes(lcovFiles: LcovFile[]) {
+function createDecorationTypes(
+  lcovFiles: LcovFile[],
+  coveredColor: string,
+  uncoveredColor: string
+) {
   lcovFiles.forEach((file) => {
     file.lines.details.forEach((lcovLine) => {
       if (filePathMap.has(file.file)) {
@@ -109,34 +135,49 @@ function createDecorationTypes(lcovFiles: LcovFile[]) {
           LcovLine,
           vscode.TextEditorDecorationType
         >;
-        innerMap.set(lcovLine, createDecorationType(lcovLine));
+        innerMap.set(
+          lcovLine,
+          createDecorationType(lcovLine, coveredColor, uncoveredColor)
+        );
       } else {
         const innerMap = new Map<LcovLine, vscode.TextEditorDecorationType>();
-        innerMap.set(lcovLine, createDecorationType(lcovLine));
+        innerMap.set(
+          lcovLine,
+          createDecorationType(lcovLine, coveredColor, uncoveredColor)
+        );
         filePathMap.set(file.file, innerMap);
       }
     });
   });
 }
 
-async function applyDecorationTypes(files: vscode.Uri[]) {
-  let openTextDocumentPromises = files.map(async (files) => {
-    const document = await vscode.workspace.openTextDocument(files);
-    vscode.window.visibleTextEditors
-      .filter((editor) => editor.document === document)
-      .forEach((editor) => {
-        applyDecorationTypesOnEditor(editor);
-      });
+async function applyDecorationTypes(
+  files: vscode.Uri[],
+  coveredColor: string,
+  uncoveredColor: string
+) {
+  let openTextDocumentPromises = files.map(async (file) => {
+    try {
+      const document = await vscode.workspace.openTextDocument(file);
+      vscode.window.visibleTextEditors
+        .filter((editor) => editor.document === document)
+        .forEach((editor) => {
+          applyDecorationTypesOnEditor(editor);
+        });
+    } catch (e) {
+      console.error("unable to open file {}. Exception: ", file, e);
+    }
   });
   await Promise.all(openTextDocumentPromises);
 }
 
-function createDecorationType(line: LcovLine): vscode.TextEditorDecorationType {
+function createDecorationType(
+  line: LcovLine,
+  coveredColor: string,
+  uncoveredColor: string
+): vscode.TextEditorDecorationType {
   return vscode.window.createTextEditorDecorationType({
-    backgroundColor:
-      line.hit === 0
-        ? "rgba(255, 0, 0, 0.2)" // Light red for uncovered lines
-        : "rgba(144, 238, 144, 0.2)", // Light green for covered lines
+    backgroundColor: line.hit === 0 ? uncoveredColor : coveredColor,
   });
 }
 

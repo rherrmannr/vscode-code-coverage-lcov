@@ -1,5 +1,3 @@
-// lcovReader.ts
-
 import parse, { LcovFile } from "lcov-parse";
 import * as fs from "fs";
 
