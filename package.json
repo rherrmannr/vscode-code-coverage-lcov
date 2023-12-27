@@ -25,12 +25,12 @@
     "configuration": {
       "title": "Code Coverage Highlighting",
       "properties": {
-        "code-coverage-highlighting.covered": {
+        "code-coverage-lcov.color.covered": {
           "type": "string",
           "default": "rgba(144, 238, 144, 0.2)",
           "description": "Specifies the color for covered lines."
         },
-        "code-coverage-highlighting.uncovered": {
+        "code-coverage-lcov.color.uncovered": {
           "type": "string",
           "default": "rgba(255, 0, 0, 0.2)",
           "description": "Specifies the color for uncovered lines."

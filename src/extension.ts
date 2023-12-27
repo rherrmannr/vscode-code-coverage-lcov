@@ -70,9 +70,7 @@ function watchReportChange(filePath: string): void {
 }
 
 async function applyCoverage(path: string) {
-  const config = vscode.workspace.getConfiguration(
-    "code-coverage-highlighting"
-  );
+  const config = vscode.workspace.getConfiguration("code-coverage-lcov.color");
 
   const coveredColor: string | undefined = config.get("covered");
   const uncoveredColor: string | undefined = config.get("uncovered");
