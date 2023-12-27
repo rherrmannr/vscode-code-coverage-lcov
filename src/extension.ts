@@ -1,11 +1,12 @@
 import * as vscode from "vscode";
-import { Trace, TarpulinData } from "./interfaces/ITarpulin";
 import fs from "fs";
 import * as chokidar from "chokidar";
+import { LcovFile, LcovLine } from "lcov-parse";
+import { readLcovFile } from "./lcov";
 
 const filePathMap = new Map<
   string,
-  Map<Trace, vscode.TextEditorDecorationType>
+  Map<LcovLine, vscode.TextEditorDecorationType>
 >();
 
 export function activate(context: vscode.ExtensionContext) {
@@ -32,7 +33,6 @@ export function onDidChangeVisibleTextEditors(
   editors: readonly vscode.TextEditor[]
 ) {
   for (const editor of editors) {
-    console.log("Visible editor:", editor.document.fileName);
     applyDecorationTypesOnEditor(editor);
   }
 }
@@ -47,7 +47,7 @@ async function disableDecorations() {
 }
 
 export function watchReport() {
-  const fileName = "tarpaulin-report.json";
+  const fileName = "lcov.info";
   vscode.workspace.findFiles(`**/${fileName}`).then((files) => {
     if (files.length > 0) {
       const filePath = files[0].fsPath;
@@ -70,28 +70,25 @@ function watchReportChange(filePath: string): void {
 }
 
 async function applyCoverage(path: string) {
-  console.log("parse json from path: ", path);
-  const jsonData = fs.readFileSync(path, "utf-8");
-  const tarpulin: TarpulinData = JSON.parse(jsonData);
+  //process the data here
   const rustFiles = await vscode.workspace.findFiles("**/*.rs");
-
   removeUsedDecorationTypes(rustFiles).then(() => {
-    createDecorationTypes(tarpulin);
-    applyDecorationTypes(rustFiles);
+    readLcovFile(path).then((lcov) => {
+      createDecorationTypes(lcov);
+      applyDecorationTypes(rustFiles);
+    });
   });
 }
 
 async function removeUsedDecorationTypes(rustFiles: vscode.Uri[]) {
+  if (filePathMap.size === 0) {
+    return;
+  }
   let openTextDocumentPromises = rustFiles.map(async (rustFile) => {
     const document = await vscode.workspace.openTextDocument(rustFile);
     vscode.window.visibleTextEditors
       .filter((editor) => editor.document === document)
       .forEach((editor) => {
-        console.log(
-          "remove decoration types from visible rust editor: ",
-          document.fileName
-        );
-
         let traceDecorationTypeMap = filePathMap.get(document.fileName);
         if (traceDecorationTypeMap) {
           traceDecorationTypeMap.forEach((decorationType) => {
@@ -104,20 +101,19 @@ async function removeUsedDecorationTypes(rustFiles: vscode.Uri[]) {
   filePathMap.clear();
 }
 
-function createDecorationTypes(tarpulin: TarpulinData) {
-  tarpulin.files.forEach((file) => {
-    let path = "/" + file.path.slice(1).join("/");
-    file.traces.forEach((trace) => {
-      if (filePathMap.has(path)) {
-        const innerMap = filePathMap.get(path) as Map<
-          Trace,
+function createDecorationTypes(lcovFiles: LcovFile[]) {
+  lcovFiles.forEach((file) => {
+    file.lines.details.forEach((lcovLine) => {
+      if (filePathMap.has(file.file)) {
+        const innerMap = filePathMap.get(file.file) as Map<
+          LcovLine,
           vscode.TextEditorDecorationType
         >;
-        innerMap.set(trace, createDecorationType(trace));
+        innerMap.set(lcovLine, createDecorationType(lcovLine));
       } else {
-        const innerMap = new Map<Trace, vscode.TextEditorDecorationType>();
-        innerMap.set(trace, createDecorationType(trace));
-        filePathMap.set(path, innerMap);
+        const innerMap = new Map<LcovLine, vscode.TextEditorDecorationType>();
+        innerMap.set(lcovLine, createDecorationType(lcovLine));
+        filePathMap.set(file.file, innerMap);
       }
     });
   });
@@ -135,10 +131,10 @@ async function applyDecorationTypes(rustFiles: vscode.Uri[]) {
   await Promise.all(openTextDocumentPromises);
 }
 
-function createDecorationType(trace: Trace): vscode.TextEditorDecorationType {
+function createDecorationType(line: LcovLine): vscode.TextEditorDecorationType {
   return vscode.window.createTextEditorDecorationType({
     backgroundColor:
-      trace.stats.Line === 0
+      line.hit === 0
         ? "rgba(255, 0, 0, 0.2)" // Light red for uncovered lines
         : "rgba(144, 238, 144, 0.2)", // Light green for covered lines
   });
@@ -149,7 +145,6 @@ async function applyDecorationTypesOnEditor(editor: vscode.TextEditor) {
   if (!traceDecorationTypeMap) {
     return;
   }
-  console.log("apply decoration types on editor: ", editor.document.fileName);
 
   traceDecorationTypeMap.forEach((decorationType, trace) => {
     editor.setDecorations(decorationType, [
