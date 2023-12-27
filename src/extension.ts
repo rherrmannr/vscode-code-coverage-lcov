@@ -42,8 +42,8 @@ export function deactivate() {
 }
 
 async function disableDecorations() {
-  const rustFiles = await vscode.workspace.findFiles("**/*.rs");
-  removeUsedDecorationTypes(rustFiles);
+  const files = await vscode.workspace.findFiles("**/*");
+  removeUsedDecorationTypes(files);
 }
 
 export function watchReport() {
@@ -71,21 +71,21 @@ function watchReportChange(filePath: string): void {
 
 async function applyCoverage(path: string) {
   //process the data here
-  const rustFiles = await vscode.workspace.findFiles("**/*.rs");
-  removeUsedDecorationTypes(rustFiles).then(() => {
+  const files = await vscode.workspace.findFiles("**/*");
+  removeUsedDecorationTypes(files).then(() => {
     readLcovFile(path).then((lcov) => {
       createDecorationTypes(lcov);
-      applyDecorationTypes(rustFiles);
+      applyDecorationTypes(files);
     });
   });
 }
 
-async function removeUsedDecorationTypes(rustFiles: vscode.Uri[]) {
+async function removeUsedDecorationTypes(files: vscode.Uri[]) {
   if (filePathMap.size === 0) {
     return;
   }
-  let openTextDocumentPromises = rustFiles.map(async (rustFile) => {
-    const document = await vscode.workspace.openTextDocument(rustFile);
+  let openTextDocumentPromises = files.map(async (file) => {
+    const document = await vscode.workspace.openTextDocument(file);
     vscode.window.visibleTextEditors
       .filter((editor) => editor.document === document)
       .forEach((editor) => {
@@ -119,9 +119,9 @@ function createDecorationTypes(lcovFiles: LcovFile[]) {
   });
 }
 
-async function applyDecorationTypes(rustFiles: vscode.Uri[]) {
-  let openTextDocumentPromises = rustFiles.map(async (rustFile) => {
-    const document = await vscode.workspace.openTextDocument(rustFile);
+async function applyDecorationTypes(files: vscode.Uri[]) {
+  let openTextDocumentPromises = files.map(async (files) => {
+    const document = await vscode.workspace.openTextDocument(files);
     vscode.window.visibleTextEditors
       .filter((editor) => editor.document === document)
       .forEach((editor) => {
