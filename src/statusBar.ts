@@ -36,6 +36,10 @@ export function addStatusBar(context: vscode.ExtensionContext) {
   context.subscriptions.push(statusBarItem);
 }
 
+export function removeStatusBar() {
+  statusBarItem.dispose();
+}
+
 export function updateStatusBar(visible: boolean) {
   if (isCodeCoverageVisible === visible) {
     return;

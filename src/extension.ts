@@ -5,7 +5,7 @@ import {
   applyDecorationTypesOnEditor,
   disableDecorations,
 } from "./decorations";
-import { addStatusBar, updateStatusBar } from "./statusBar";
+import { addStatusBar, removeStatusBar, updateStatusBar } from "./statusBar";
 import { CommandDisplay, CommandHide } from "./commands";
 
 let watcher: chokidar.FSWatcher | null = null;
@@ -45,6 +45,7 @@ export function onDidChangeVisibleTextEditors(
 export function deactivate() {
   disableDecorations();
   watcher?.close();
+  removeStatusBar();
 }
 
 export function watchReport() {
