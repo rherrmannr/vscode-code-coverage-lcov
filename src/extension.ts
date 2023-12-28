@@ -143,6 +143,16 @@ function createDecorationTypes(
           lcovLine,
           createDecorationType(lcovLine, coveredColor, uncoveredColor)
         );
+
+        const path = require("path");
+        if (!path.isAbsolute(file.file)) {
+          let workspaceFolders = vscode.workspace.workspaceFolders;
+          if (!workspaceFolders) {
+            console.error("Unable to create absolute path for lcov files.");
+            return;
+          }
+          file.file = path.join(workspaceFolders[0].uri.fsPath, file.file);
+        }
         filePathMap.set(file.file, innerMap);
       }
     });
