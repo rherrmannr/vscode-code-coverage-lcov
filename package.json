@@ -23,7 +23,7 @@
       }
     ],
     "configuration": {
-      "title": "Code Coverage Highlighting",
+      "title": "Code Coverage LCOV",
       "properties": {
         "code-coverage-lcov.color.covered": {
           "type": "string",
