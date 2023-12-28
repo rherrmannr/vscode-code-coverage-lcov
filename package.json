@@ -20,6 +20,10 @@
       {
         "command": "code-coverage-lcov.hide",
         "title": "Code Coverage LCOV: Hide"
+      },
+      {
+        "command": "code-coverage-lcov.toggle",
+        "title": "Code Coverage LCOV: Toggle"
       }
     ],
     "configuration": {
