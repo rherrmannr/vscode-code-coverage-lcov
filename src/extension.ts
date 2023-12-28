@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import fs from "fs";
 import * as chokidar from "chokidar";
 import { LcovFile, LcovLine } from "lcov-parse";
-import { readLcovFile } from "./lcov";
+import { makePathsAbsolute, readLcovFile } from "./lcov";
 
 const filePathMap = new Map<
   string,
@@ -87,6 +87,7 @@ async function applyCoverage(path: string) {
   const files = await vscode.workspace.findFiles("**/*");
   removeUsedDecorationTypes(files).then(() => {
     readLcovFile(path).then((lcov) => {
+      makePathsAbsolute(lcov);
       createDecorationTypes(lcov, coveredColor, uncoveredColor);
       applyDecorationTypes(files, coveredColor, uncoveredColor);
     });
@@ -143,16 +144,6 @@ function createDecorationTypes(
           lcovLine,
           createDecorationType(lcovLine, coveredColor, uncoveredColor)
         );
-
-        const path = require("path");
-        if (!path.isAbsolute(file.file)) {
-          let workspaceFolders = vscode.workspace.workspaceFolders;
-          if (!workspaceFolders) {
-            console.error("Unable to create absolute path for lcov files.");
-            return;
-          }
-          file.file = path.join(workspaceFolders[0].uri.fsPath, file.file);
-        }
         filePathMap.set(file.file, innerMap);
       }
     });
