@@ -47,8 +47,8 @@ async function disableDecorations() {
 }
 
 export function watchReport() {
-  const fileName = "lcov.info";
-  vscode.workspace.findFiles(`**/${fileName}`).then((files) => {
+  const fileName = "lcov";
+  vscode.workspace.findFiles(`**/${fileName}*`).then((files) => {
     if (files.length > 0) {
       const filePath = files[0].fsPath;
       applyCoverage(filePath);
