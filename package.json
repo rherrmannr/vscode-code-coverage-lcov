@@ -32,12 +32,17 @@
         "code-coverage-lcov.color.covered": {
           "type": "string",
           "default": "rgba(144, 238, 144, 0.2)",
-          "description": "Specifies the color for covered lines."
+          "description": "Specifies the color f or covered lines."
         },
         "code-coverage-lcov.color.uncovered": {
           "type": "string",
           "default": "rgba(255, 0, 0, 0.2)",
           "description": "Specifies the color for uncovered lines."
+        },
+        "code-coverage-lcov.path.searchPath": {
+          "type": "string",
+          "default": "**/lcov*",
+          "description": "Search path to the lcov file."
         }
       }
     }
