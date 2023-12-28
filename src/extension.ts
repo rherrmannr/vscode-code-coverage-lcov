@@ -85,9 +85,6 @@ async function applyCoverage(path: string) {
   }
 
   const files = await vscode.workspace.findFiles("**/*");
-  files.forEach((file) => {
-    console.log(file);
-  });
   removeUsedDecorationTypes(files).then(() => {
     readLcovFile(path).then((lcov) => {
       createDecorationTypes(lcov, coveredColor, uncoveredColor);
@@ -102,6 +99,9 @@ async function removeUsedDecorationTypes(files: vscode.Uri[]) {
   }
   let openTextDocumentPromises = files.map(async (file) => {
     try {
+      if (!filePathMap.has(file.path)) {
+        return;
+      }
       const document = await vscode.workspace.openTextDocument(file);
       vscode.window.visibleTextEditors
         .filter((editor) => editor.document === document)
@@ -114,7 +114,7 @@ async function removeUsedDecorationTypes(files: vscode.Uri[]) {
           }
         });
     } catch (e) {
-      console.error("unable to open file {}. Exception: ", file, e);
+      console.error(`Unable to open file ${file}. Exception: ${e}`);
     }
   });
   await Promise.all(openTextDocumentPromises);
@@ -155,6 +155,9 @@ async function applyDecorationTypes(
   uncoveredColor: string
 ) {
   let openTextDocumentPromises = files.map(async (file) => {
+    if (!filePathMap.has(file.path)) {
+      return;
+    }
     try {
       const document = await vscode.workspace.openTextDocument(file);
       vscode.window.visibleTextEditors
@@ -163,7 +166,7 @@ async function applyDecorationTypes(
           applyDecorationTypesOnEditor(editor);
         });
     } catch (e) {
-      console.error("unable to open file {}. Exception: ", file, e);
+      console.error(`Unable to open file ${file}. Exception: ${e}`);
     }
   });
   await Promise.all(openTextDocumentPromises);
