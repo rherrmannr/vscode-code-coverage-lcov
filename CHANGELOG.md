@@ -1,6 +1,11 @@
 # Change Log
 ## [Unreleased]
 
+## [0.0.3]
+
+### Added
+- Preview GIF
+
 ## [0.0.2]
 
 ### Added
