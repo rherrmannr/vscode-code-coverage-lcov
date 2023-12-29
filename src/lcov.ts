@@ -38,7 +38,9 @@ function getAbsolutePath(filePath: string): string | undefined {
   if (!path.isAbsolute(filePath)) {
     let workspaceFolders = vscode.workspace.workspaceFolders;
     if (!workspaceFolders) {
-      console.error("Unable to create absolute path for lcov files.");
+      vscode.window.showErrorMessage(
+        "Unable to create absolute path for lcov files."
+      );
       return undefined;
     }
     return path.join(workspaceFolders[0].uri.fsPath, filePath);

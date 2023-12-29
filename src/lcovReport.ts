@@ -8,7 +8,7 @@ let watcher: chokidar.FSWatcher | null = null;
 export function watchReport() {
   let filePath = getFilePath();
   if (!filePath) {
-    console.error("Unable read Search Path.");
+    vscode.window.showErrorMessage("Unable read Search Path.");
     return;
   }
 
@@ -22,7 +22,9 @@ export function watchReport() {
         applyCoverage(filePath);
         watchReportChange(filePath);
       } else {
-        console.error("Unable to load lcof report: " + filePath);
+        vscode.window.showErrorMessage(
+          "Unable to load lcov report: " + filePath
+        );
       }
     });
   }
@@ -34,7 +36,7 @@ function watchReportChange(filePath: string): void {
     applyCoverage(path);
   });
   watcher.on("error", (error) => {
-    console.error(`Error watching file: ${error}`);
+    vscode.window.showErrorMessage(`Error watching file: ${error}`);
   });
 }
 

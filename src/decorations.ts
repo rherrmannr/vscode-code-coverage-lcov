@@ -19,11 +19,7 @@ export async function applyCoverage(path: string) {
   const uncoveredColor: string | undefined = config.get("uncovered");
 
   if (!coveredColor || !uncoveredColor) {
-    console.error(
-      "Unable to highlighting colors. covered: {}, uncovored: {}",
-      coveredColor,
-      uncoveredColor
-    );
+    vscode.window.showErrorMessage("Unable to highlighting colors.");
     return;
   }
 
@@ -58,7 +54,9 @@ async function removeUsedDecorationTypes(files: vscode.Uri[]) {
           }
         });
     } catch (e) {
-      console.error(`Unable to open file ${file}. Exception: ${e}`);
+      vscode.window.showErrorMessage(
+        `Unable to open file ${file}. Exception: ${e}`
+      );
     }
   });
   await Promise.all(openTextDocumentPromises);
@@ -110,7 +108,9 @@ async function applyDecorationTypes(
           applyDecorationTypesOnEditor(editor);
         });
     } catch (e) {
-      console.error(`Unable to open file ${file}. Exception: ${e}`);
+      vscode.window.showErrorMessage(
+        `Unable to open file ${file}. Exception: ${e}`
+      );
     }
   });
   await Promise.all(openTextDocumentPromises);
