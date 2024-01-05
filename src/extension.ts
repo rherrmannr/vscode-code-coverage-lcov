@@ -7,8 +7,9 @@ import {
 import { addStatusBar, removeStatusBar, updateStatusBar } from "./statusBar";
 import { CommandDisplay, CommandHide } from "./commands";
 import {
-  watchReport as activateWatchReport,
+  activateWatchReport,
   disableReportWatcher,
+  disableWatchReport,
 } from "./lcovReport";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -21,7 +22,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand(CommandHide, () => {
-      disableDecorations();
+      disableWatchReport();
       updateStatusBar(false);
     })
   );

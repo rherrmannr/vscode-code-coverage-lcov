@@ -1,11 +1,11 @@
 import * as vscode from "vscode";
 import * as chokidar from "chokidar";
-import { applyCoverage } from "./decorations";
+import { applyCoverage, disableDecorations } from "./decorations";
 import path from "path";
 
 let watcher: chokidar.FSWatcher | null = null;
 
-export function watchReport() {
+export function activateWatchReport() {
   let filePath = getFilePath();
   if (!filePath) {
     vscode.window.showErrorMessage("Unable read Search Path.");
@@ -28,6 +28,11 @@ export function watchReport() {
       }
     });
   }
+}
+
+export function disableWatchReport() {
+  watcher?.removeAllListeners();
+  disableDecorations();
 }
 
 function watchReportChange(filePath: string): void {
