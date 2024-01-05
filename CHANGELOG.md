@@ -1,5 +1,8 @@
 # Change Log
+
 ## [Unreleased]
+
+## [0.0.4]
 
 ### Added
 - Branch coverage
