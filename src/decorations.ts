@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { LcovFile, LcovLine } from "lcov-parse";
+import { LcovBranch, LcovFile, LcovLine } from "lcov-parse";
 import { makePathsAbsolute, readLcovFile } from "./lcov";
 
 const filePathMap = new Map<
@@ -13,12 +13,20 @@ export async function disableDecorations() {
 }
 
 export async function applyCoverage(path: string) {
-  const config = vscode.workspace.getConfiguration("code-coverage-lcov.color");
+  const colorConfig = vscode.workspace.getConfiguration(
+    "code-coverage-lcov.color"
+  );
+  const configConfig = vscode.workspace.getConfiguration(
+    "code-coverage-lcov.config"
+  );
 
-  const coveredColor: string | undefined = config.get("covered");
-  const uncoveredColor: string | undefined = config.get("uncovered");
+  const coveredColor: string | undefined = colorConfig.get("covered");
+  const uncoveredColor: string | undefined = colorConfig.get("uncovered");
+  const branchColor: string | undefined = colorConfig.get("branch");
+  const branchCoverageEnabled: boolean =
+    configConfig.get("branchCoverage") ?? false;
 
-  if (!coveredColor || !uncoveredColor) {
+  if (!coveredColor || !uncoveredColor || !branchColor) {
     vscode.window.showErrorMessage("Unable to highlighting colors.");
     return;
   }
@@ -27,8 +35,14 @@ export async function applyCoverage(path: string) {
   removeUsedDecorationTypes(files).then(() => {
     readLcovFile(path).then((lcov) => {
       makePathsAbsolute(lcov);
-      createDecorationTypes(lcov, coveredColor, uncoveredColor);
-      applyDecorationTypes(files, coveredColor, uncoveredColor);
+      createDecorationTypes(
+        lcov,
+        coveredColor,
+        uncoveredColor,
+        branchColor,
+        branchCoverageEnabled
+      );
+      applyDecorationTypes(files);
     });
   });
 }
@@ -66,10 +80,15 @@ async function removeUsedDecorationTypes(files: vscode.Uri[]) {
 function createDecorationTypes(
   lcovFiles: LcovFile[],
   coveredColor: string,
-  uncoveredColor: string
+  uncoveredColor: string,
+  branchColor: string,
+  branchCoverageEnabled: boolean
 ) {
   lcovFiles.forEach((file) => {
     file.lines.details.forEach((lcovLine) => {
+      let branches = file.branches.details.filter((branch) => {
+        return lcovLine.line === branch.line;
+      });
       if (filePathMap.has(file.file)) {
         const innerMap = filePathMap.get(file.file) as Map<
           LcovLine,
@@ -77,13 +96,27 @@ function createDecorationTypes(
         >;
         innerMap.set(
           lcovLine,
-          createDecorationType(lcovLine, coveredColor, uncoveredColor)
+          createDecorationType(
+            lcovLine,
+            branches,
+            coveredColor,
+            uncoveredColor,
+            branchColor,
+            branchCoverageEnabled
+          )
         );
       } else {
         const innerMap = new Map<LcovLine, vscode.TextEditorDecorationType>();
         innerMap.set(
           lcovLine,
-          createDecorationType(lcovLine, coveredColor, uncoveredColor)
+          createDecorationType(
+            lcovLine,
+            branches,
+            coveredColor,
+            uncoveredColor,
+            branchColor,
+            branchCoverageEnabled
+          )
         );
         filePathMap.set(file.file, innerMap);
       }
@@ -91,11 +124,7 @@ function createDecorationTypes(
   });
 }
 
-async function applyDecorationTypes(
-  files: vscode.Uri[],
-  coveredColor: string,
-  uncoveredColor: string
-) {
+async function applyDecorationTypes(files: vscode.Uri[]) {
   let openTextDocumentPromises = files.map(async (file) => {
     if (!filePathMap.has(file.path)) {
       return;
@@ -118,11 +147,34 @@ async function applyDecorationTypes(
 
 function createDecorationType(
   line: LcovLine,
+  branches: Array<LcovBranch>,
   coveredColor: string,
-  uncoveredColor: string
+  uncoveredColor: string,
+  branchColor: string,
+  branchCoverageEnabled: boolean
 ): vscode.TextEditorDecorationType {
+  // return uncovored
+  if (line.hit === 0) {
+    return vscode.window.createTextEditorDecorationType({
+      backgroundColor: uncoveredColor,
+    });
+  }
+
+  // return all covored
+  if (
+    branches.every((branch) => {
+      return branch.taken > 0;
+    }) ||
+    !branchCoverageEnabled
+  ) {
+    return vscode.window.createTextEditorDecorationType({
+      backgroundColor: coveredColor,
+    });
+  }
+
+  // return branch covored
   return vscode.window.createTextEditorDecorationType({
-    backgroundColor: line.hit === 0 ? uncoveredColor : coveredColor,
+    backgroundColor: branchColor,
   });
 }
 

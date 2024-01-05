@@ -1,6 +1,9 @@
 # Change Log
 ## [Unreleased]
 
+### Added
+- Branch coverage
+
 ## [0.0.3]
 
 ### Added

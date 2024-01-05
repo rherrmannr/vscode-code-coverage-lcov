@@ -38,7 +38,7 @@
       "properties": {
         "code-coverage-lcov.color.covered": {
           "type": "string",
-          "default": "rgba(144, 238, 144, 0.2)",
+          "default": "rgba(50, 205, 50, 0.2)",
           "description": "Specifies the color f or covered lines."
         },
         "code-coverage-lcov.color.uncovered": {
@@ -46,10 +46,20 @@
           "default": "rgba(255, 0, 0, 0.2)",
           "description": "Specifies the color for uncovered lines."
         },
+        "code-coverage-lcov.color.branch": {
+          "type": "string",
+          "default": "rgba(255, 255, 0, 0.2)",
+          "description": "Specifies the color for uncovored branches."
+        },
         "code-coverage-lcov.path.searchPath": {
           "type": "string",
           "default": "**/lcov*",
           "description": "Search path to the lcov file."
+        },
+        "code-coverage-lcov.config.branchCoverage": {
+          "type": "boolean",
+          "default": "true",
+          "description": "Specifies whether to show branch coverage."
         }
       }
     }
