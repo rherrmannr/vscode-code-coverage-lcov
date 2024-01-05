@@ -4,6 +4,9 @@
 ### Added
 - Branch coverage
 
+### Fixed
+- Resolved an issue where coverage was applied multiple times on file change
+
 ## [0.0.3]
 
 ### Added

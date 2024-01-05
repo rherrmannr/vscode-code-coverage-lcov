@@ -12,7 +12,12 @@ export async function disableDecorations() {
   removeUsedDecorationTypes(files);
 }
 
+let isApplyingCoverage = false;
 export async function applyCoverage(path: string) {
+  if (isApplyingCoverage) {
+    return;
+  }
+  isApplyingCoverage = true;
   const colorConfig = vscode.workspace.getConfiguration(
     "code-coverage-lcov.color"
   );
@@ -45,6 +50,7 @@ export async function applyCoverage(path: string) {
       applyDecorationTypes(files);
     });
   });
+  isApplyingCoverage = false;
 }
 
 async function removeUsedDecorationTypes(files: vscode.Uri[]) {

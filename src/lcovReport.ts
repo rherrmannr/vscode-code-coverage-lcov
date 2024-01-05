@@ -32,8 +32,8 @@ export function watchReport() {
 
 function watchReportChange(filePath: string): void {
   watcher = chokidar.watch(filePath);
-  watcher.on("change", (path) => {
-    applyCoverage(path);
+  watcher.on("change", async (path) => {
+    await applyCoverage(path);
   });
   watcher.on("error", (error) => {
     vscode.window.showErrorMessage(`Error watching file: ${error}`);
