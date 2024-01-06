@@ -8,6 +8,7 @@
     "type": "git",
     "url": "https://github.com/rherrmannr/vscode-code-coverage-lcov"
   },
+  "icon": "icon.png",
   "engines": {
     "vscode": "^1.84.0"
   },
