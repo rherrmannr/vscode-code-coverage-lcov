@@ -73,6 +73,6 @@ Code Coverage LCOV works seamlessly with code coverage tools that generate lcov 
 
 ## License
 
-This extension is licensed under the [MIT License](LICENSE). Feel free to contribute or report issues on the [GitHub repository](https://github.com/yourusername/code-coverage-lcov).
+This extension is licensed under the [MIT License](LICENSE). Feel free to contribute or report issues on the [GitHub repository](https://github.com/rherrmannr/vscode-code-coverage-lcov).
 
 Enjoy coding with enhanced code coverage visualization in Visual Studio Code!
