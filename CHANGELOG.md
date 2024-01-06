@@ -1,6 +1,9 @@
 # Change Log
 
-## [Unreleased]
+## [1.0.1]
+
+### Added
+- Added icon
 
 ## [1.0.0]
 
