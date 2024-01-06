@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [1.0.0]
+
+### Changed
+- Updated README.md for 1.0.0 release
+
 ## [0.1.0]
 
 ### Added
@@ -20,12 +25,11 @@
 
 ### Added
 - Activate on start up
-- 
+
 ### Changed
 - Show error messages instead of log.error
 
 ## [0.0.1]
 
 ### Added
-
 - Initial release
