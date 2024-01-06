@@ -3,7 +3,7 @@
   "publisher": "rherrmannr",
   "displayName": "Code Coverage LCOV",
   "description": "",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": {
     "type": "git",
     "url": "https://github.com/rherrmannr/vscode-code-coverage-lcov"
