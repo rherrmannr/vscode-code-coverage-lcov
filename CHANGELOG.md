@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.4]
+
+### Fixed
+- Fixed crashes when loading large LCOV files. Perfomance improved.
+
 ## [1.0.1]
 
 ### Added

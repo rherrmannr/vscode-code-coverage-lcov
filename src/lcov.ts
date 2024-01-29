@@ -9,18 +9,27 @@ export function readLcovFile(filePath: string): Promise<LcovFile[]> {
         reject(err);
         return;
       }
-      parse(filePath, (error, data) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        if (data === undefined) {
-          reject();
-          return;
-        }
-        resolve(data);
-      });
+      tryParse(filePath, resolve, reject);
     });
+  });
+}
+
+function tryParse(
+  filePath: string,
+  resolve: (value: parse.LcovFile[] | PromiseLike<parse.LcovFile[]>) => void,
+  reject: (reason?: any) => void
+) {
+  parse(filePath, (error, data) => {
+    if (error) {
+      reject(error);
+      return;
+    }
+    if (data === undefined) {
+      reject();
+      return;
+    }
+    resolve(data);
+    return;
   });
 }
 
