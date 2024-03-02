@@ -44,10 +44,6 @@ export async function applyCoverage() {
   removeDecorationTypes();
   decorationTypes.clear();
   let config = getConfig();
-  if (!config) {
-    isApplyingCoverage = false;
-    return;
-  }
   let editors = vscode.window.visibleTextEditors;
 
   for (const editor of editors) {

@@ -72,12 +72,14 @@
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
     "test": "node ./out/test/unitTest/runTest.js",
-    "coverage": "c8 --clean npm run test"
+    "coverage": "c8 npm run test",
+    "coverage:clean": "c8 --clean npm run test"
   },
   "devDependencies": {
     "@types/lcov-parse": "^1.0.2",
     "@types/mocha": "^10.0.3",
     "@types/node": "18.x",
+    "@types/sinon": "^17.0.3",
     "@types/vscode": "^1.84.0",
     "@typescript-eslint/eslint-plugin": "^6.9.0",
     "@typescript-eslint/parser": "^6.9.0",
@@ -87,6 +89,7 @@
     "eslint": "^8.52.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
+    "sinon": "^17.0.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {

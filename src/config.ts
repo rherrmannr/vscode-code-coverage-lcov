@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import { custom } from "./log";
 
 export interface Config {
   coveredColor: string;
@@ -7,7 +8,7 @@ export interface Config {
   branchCoverageEnabled: boolean;
 }
 
-export function getConfig(): Config | undefined {
+export function getConfig(): Config {
   const colorConfig = vscode.workspace.getConfiguration(
     "code-coverage-lcov.color"
   );
@@ -18,13 +19,24 @@ export function getConfig(): Config | undefined {
   const coveredColor: string | undefined = colorConfig.get("covered");
   const uncoveredColor: string | undefined = colorConfig.get("uncovered");
   const branchColor: string | undefined = colorConfig.get("branch");
-  const branchCoverageEnabled: boolean =
-    configConfig.get("branchCoverage") ?? false;
+  const branchCoverageEnabled: boolean | undefined =
+    configConfig.get("branchCoverage");
 
-  if (!coveredColor || !uncoveredColor || !branchColor) {
-    vscode.window.showErrorMessage("Unable to highlighting colors.");
-    return undefined;
+  if (
+    !coveredColor ||
+    !uncoveredColor ||
+    !branchColor ||
+    !branchCoverageEnabled
+  ) {
+    custom.error("Unable to read configuration. Proceed with default values");
+    return {
+      coveredColor: "rgba(50, 205, 50, 0.2)",
+      uncoveredColor: "rgba(255, 0, 0, 0.2)",
+      branchColor: "rgba(255, 255, 0, 0.2)",
+      branchCoverageEnabled: true,
+    };
   }
+
   return {
     coveredColor: coveredColor,
     uncoveredColor: uncoveredColor,
