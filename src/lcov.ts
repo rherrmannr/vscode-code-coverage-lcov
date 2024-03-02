@@ -53,5 +53,7 @@ function getAbsolutePath(filePath: string): string | undefined {
       return undefined;
     }
     return path.join(workspaceFolders[0].uri.fsPath, filePath);
+  } else {
+    return filePath;
   }
 }

@@ -4,7 +4,7 @@ import { disableDecorations, applyCoverage } from "./decorations";
 import path from "path";
 import { custom } from "./log";
 import { LcovFile } from "lcov-parse";
-import { readLcovFile } from "./lcov";
+import { makePathsAbsolute, readLcovFile } from "./lcov";
 import { config } from "process";
 
 let lcovFiles: LcovFile[] = [];
@@ -19,10 +19,9 @@ export async function resolveLCOVFile() {
   }
   lcovFilesCache = lcovFiles;
   loaded = false;
-  console.error("loaded:", loaded);
   lcovFiles = await readLcovFile(filePath);
+  makePathsAbsolute(lcovFiles);
   loaded = true;
-  console.error("loaded:", loaded);
 }
 
 export function getLcovFiles(): LcovFile[] {
@@ -72,7 +71,7 @@ export async function activateWatchReport(): Promise<void> {
     while (!stop) {
       stop = true;
       await resolveLCOVFile().then(undefined, (err) => {
-        console.error("Unable to resolve lcov file");
+        custom.error("Unable to resolve lcov file");
         stop = false;
       });
     }
