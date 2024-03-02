@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.5]
+
+### Fixed
+- Fixed broken display of lcov files, which have been using relative paths
+
 ## [1.0.4]
 
 ### Fixed
