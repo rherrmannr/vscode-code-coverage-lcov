@@ -16,6 +16,17 @@
 				"${workspaceFolder}/out/**/*.js"
 			],
 			"preLaunchTask": "${defaultBuildTask}"
+		},
+		{
+			"name": "Extension Tests",
+			"type": "extensionHost",
+			"request": "launch",
+			"runtimeExecutable": "${execPath}",
+			"args": [
+			  "--extensionDevelopmentPath=${workspaceFolder}",
+			  "--extensionTestsPath=${workspaceFolder}/out/test/unitTest/index"
+			],
+			"outFiles": ["${workspaceFolder}/out/test/**/*.js"]
 		}
 	]
 }
