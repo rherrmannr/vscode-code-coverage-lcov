@@ -8,7 +8,7 @@ async function main() {
     // The folder containing the Extension Manifest package.json
     // Passed to `--extensionDevelopmentPath`
     const extensionDevelopmentPath = path.resolve(__dirname, "../../../");
-    const workspacePath = path.resolve(__dirname, "../../../test/fortran/");
+    const workspacePath = path.resolve(__dirname, "../../../test/configs/");
 
     // The path to the extension test runner script
     // Passed to --extensionTestsPath
