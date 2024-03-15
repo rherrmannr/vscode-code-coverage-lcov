@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import * as chokidar from "chokidar";
 import { disableDecorations, applyCoverage } from "./decorations";
 import path from "path";
+import fs from "fs";
 import { custom } from "./log";
 import { LcovFile } from "lcov-parse";
 import { makePathsAbsolute, readLcovFile } from "./lcov";
@@ -61,13 +62,11 @@ export function disableWatchReport() {
   watcher?.removeAllListeners();
   disableDecorations();
 }
-let stop = false;
 
 export async function activateWatchReport(): Promise<void> {
   await resolveLCOVFile();
-  watcher = chokidar.watch(filePath);
-  watcher.on("change", async (path) => {
-    stop = false;
+  fs.watch(filePath, async (event, filename) => {
+    let stop = false;
     while (!stop) {
       stop = true;
       await resolveLCOVFile().then(undefined, (err) => {
@@ -76,9 +75,6 @@ export async function activateWatchReport(): Promise<void> {
       });
     }
     await applyCoverage();
-  });
-  watcher.on("error", (error) => {
-    vscode.window.showErrorMessage(`Error watching file: ${error}`);
   });
 }
 

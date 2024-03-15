@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.7]
+
+### Fixed
+- Fixed missing coverage after changing lcov report too fast
+
 ## [1.0.6]
 
 ### Fixed
