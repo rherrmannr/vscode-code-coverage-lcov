@@ -93,7 +93,6 @@
     "typescript": "^5.4.x"
   },
   "dependencies": {
-    "chokidar": "^3.5.3",
     "lcov-parse": "^1.0.0"
   }
 }
