@@ -1,5 +1,10 @@
 # Change Log
 
+## [1.0.6]
+
+### Fixed
+- Fixed multiple applied coverage if the same file was opened
+
 ## [1.0.5]
 
 ### Fixed
