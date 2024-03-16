@@ -3,6 +3,12 @@
 ## [1.0.7]
 
 ### Fixed
+- Fixed hiding coverage after deleting/renaming file
+
+### Added
+- User feedback if file get's deleted/renamed and coverage can not be shown anymore
+
+### Fixed
 - Fixed missing coverage after changing lcov report too fast
 
 ## [1.0.6]

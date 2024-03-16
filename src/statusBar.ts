@@ -22,8 +22,9 @@ export function addStatusBar(context: vscode.ExtensionContext) {
     isCodeCoverageVisible = !isCodeCoverageVisible;
 
     if (isCodeCoverageVisible) {
-      statusBarItem.text = HideCoverage;
-      vscode.commands.executeCommand(CommandDisplay);
+      vscode.commands.executeCommand(CommandDisplay).then(() => {
+        statusBarItem.text = HideCoverage;
+      });
     } else {
       statusBarItem.text = ShowCoverage;
       vscode.commands.executeCommand(CommandHide);

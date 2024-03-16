@@ -1,39 +1,25 @@
 import parse, { LcovFile } from "lcov-parse";
-import * as fs from "fs";
 import * as vscode from "vscode";
+import { custom } from "./log";
 
-export function readLcovFile(filePath: string): Promise<LcovFile[]> {
+export async function loadLcovFiles(filePath: string): Promise<LcovFile[]> {
   return new Promise((resolve, reject) => {
-    fs.readFile(filePath, "utf-8", (err, data) => {
-      if (err) {
-        reject(err);
-        return;
+    parse(filePath, (error, data) => {
+      if (error) {
+        custom.error("Failed to resolve '" + filePath + "', received: ", error);
+        return reject(error);
       }
-      tryParse(filePath, resolve, reject);
+      if (data === undefined) {
+        custom.error("Failed to resolve '" + filePath + "', data: ", data);
+        return reject();
+      }
+      makePathsAbsolute(data);
+      return resolve(data);
     });
   });
 }
 
-function tryParse(
-  filePath: string,
-  resolve: (value: parse.LcovFile[] | PromiseLike<parse.LcovFile[]>) => void,
-  reject: (reason?: any) => void
-) {
-  parse(filePath, (error, data) => {
-    if (error) {
-      reject(error);
-      return;
-    }
-    if (data === undefined) {
-      reject();
-      return;
-    }
-    resolve(data);
-    return;
-  });
-}
-
-export function makePathsAbsolute(files: LcovFile[]) {
+function makePathsAbsolute(files: LcovFile[]) {
   files.forEach((file) => {
     let absolutePath = getAbsolutePath(file.file);
     if (absolutePath) {

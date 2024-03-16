@@ -1,6 +1,5 @@
 import * as vscode from "vscode";
 import { LcovBranch, LcovFile, LcovLine } from "lcov-parse";
-import { makePathsAbsolute, readLcovFile } from "./lcov";
 import { custom } from "./log";
 import { getLcovFiles } from "./lcovReport";
 import { Config, getConfig } from "./config";
@@ -32,7 +31,7 @@ export async function applyDecorationTypes(
   });
 }
 
-export async function applyCoverage() {
+export function applyCoverage() {
   if (isApplyingCoverage) {
     return;
   }
@@ -54,7 +53,7 @@ export async function applyCoverage() {
   isApplyingCoverage = false;
 }
 
-function removeDecorationTypes() {
+export function removeDecorationTypes() {
   custom.log("remove all decoration types");
   appliedDecorationTypes.forEach((it) => {
     it.dispose();
