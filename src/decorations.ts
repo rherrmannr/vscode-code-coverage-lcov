@@ -69,7 +69,8 @@ function createDecorationType(
   // return uncovored
   if (line.hit === 0) {
     return vscode.window.createTextEditorDecorationType({
-      backgroundColor: config.uncoveredColor,
+      backgroundColor: config.uncoveredColor.color,
+      gutterIconPath: config.uncoveredColor.iconPath,
     });
   }
   // return all covored
@@ -80,12 +81,14 @@ function createDecorationType(
     !config.branchCoverageEnabled
   ) {
     return vscode.window.createTextEditorDecorationType({
-      backgroundColor: config.coveredColor,
+      backgroundColor: config.coveredColor.color,
+      gutterIconPath: config.coveredColor.iconPath,
     });
   }
   // return branch covored
   return vscode.window.createTextEditorDecorationType({
-    backgroundColor: config.branchColor,
+    backgroundColor: config.branchColor.color,
+    gutterIconPath: config.branchColor.iconPath,
   });
 }
 
