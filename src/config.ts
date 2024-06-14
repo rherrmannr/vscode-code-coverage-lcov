@@ -15,31 +15,8 @@ export interface Config {
 }
 
 export function getConfig(): Config {
-  const colorConfig = vscode.workspace.getConfiguration(
-    "code-coverage-lcov.color"
-  );
-  const configConfig = vscode.workspace.getConfiguration(
-    "code-coverage-lcov.config"
-  );
-
-  var coveredColor: string | undefined = colorConfig.get("covered");
-  var uncoveredColor: string | undefined = colorConfig.get("uncovered");
-  var branchColor: string | undefined = colorConfig.get("branch");
-  var branchCoverageEnabled: boolean | undefined =
-    configConfig.get("branchCoverage");
-
-  if (
-    !coveredColor ||
-    !uncoveredColor ||
-    !branchColor ||
-    !branchCoverageEnabled
-  ) {
-    custom.error("Unable to read configuration. Proceed with default values");
-    coveredColor = "rgba(50, 205, 50, 0.2)";
-    uncoveredColor = "rgba(255, 0, 0, 0.2)";
-    branchColor = "rgba(255, 255, 0, 0.2)";
-    branchCoverageEnabled = true;
-  }
+  let [coveredColor, uncoveredColor, branchColor] = getColors();
+  let branchCoverageEnabled = getCoverageEnabled();
 
   return {
     coveredColor: {
@@ -56,4 +33,39 @@ export function getConfig(): Config {
     },
     branchCoverageEnabled: branchCoverageEnabled,
   };
+}
+
+function getColors(): [string, string, string] {
+  const colorConfig = vscode.workspace.getConfiguration(
+    "code-coverage-lcov.color"
+  );
+
+  let coveredColor = colorConfig.get<string>("covered");
+  let uncoveredColor = colorConfig.get<string>("uncovered");
+  let branchColor = colorConfig.get<string>("branch");
+  if (!coveredColor || !uncoveredColor || !branchColor) {
+    custom.error(
+      "Unable to read color configuration. Proceed with default colors"
+    );
+    coveredColor = "rgba(50, 205, 50, 0.2)";
+    uncoveredColor = "rgba(255, 0, 0, 0.2)";
+    branchColor = "rgba(255, 255, 0, 0.2)";
+  }
+  return [coveredColor, uncoveredColor, branchColor];
+}
+
+function getCoverageEnabled(): boolean {
+  const configConfig = vscode.workspace.getConfiguration(
+    "code-coverage-lcov.config"
+  );
+
+  let branchCoverageEnabled = configConfig.get<boolean>("branchCoverage");
+  if (!branchCoverageEnabled) {
+    custom.error(
+      "Unable to read config configuration. Proceed with default config"
+    );
+    branchCoverageEnabled = true;
+  }
+
+  return branchCoverageEnabled;
 }
