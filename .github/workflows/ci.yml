@@ -41,5 +41,5 @@ jobs:
       - name: Run Unittests
         run: xvfb-run --auto-servernum npm run test
 
-      # - name: Run coverage
-      # run: npm run coverage
+      - name: Run coverage
+        run: xvfb-run --auto-servernum npm run coverage
