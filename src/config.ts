@@ -2,21 +2,26 @@ import * as vscode from "vscode";
 import { custom } from "./log";
 import { getIconPath as getIconPath } from "./gutterIcon";
 
-interface ColorConfig {
+export interface ColorConfig {
   color: string;
   iconPath: string;
+}
+
+interface CoverageConfig {
+  displayInEditor: boolean;
+  displayInGutter: boolean;
+  branchCoverage: boolean;
 }
 
 export interface Config {
   coveredColor: ColorConfig;
   uncoveredColor: ColorConfig;
   branchColor: ColorConfig;
-  branchCoverageEnabled: boolean;
+  coverageConfig: CoverageConfig;
 }
 
 export function getConfig(): Config {
   let [coveredColor, uncoveredColor, branchColor] = getColors();
-  let branchCoverageEnabled = getCoverageEnabled();
 
   return {
     coveredColor: {
@@ -31,7 +36,7 @@ export function getConfig(): Config {
       color: branchColor,
       iconPath: getIconPath(branchColor),
     },
-    branchCoverageEnabled: branchCoverageEnabled,
+    coverageConfig: getCoverageConfig(),
   };
 }
 
@@ -54,18 +59,30 @@ function getColors(): [string, string, string] {
   return [coveredColor, uncoveredColor, branchColor];
 }
 
-function getCoverageEnabled(): boolean {
+function getCoverageConfig(): CoverageConfig {
   const configConfig = vscode.workspace.getConfiguration(
     "code-coverage-lcov.config"
   );
 
-  let branchCoverageEnabled = configConfig.get<boolean>("branchCoverage");
-  if (!branchCoverageEnabled) {
+  let displayInEditor = configConfig.get<boolean>("displayInEditor");
+  let displayInGutter = configConfig.get<boolean>("displayInGutter");
+  let branchCoverage = configConfig.get<boolean>("branchCoverage");
+  if (
+    branchCoverage === undefined ||
+    displayInEditor === undefined ||
+    displayInGutter === undefined
+  ) {
     custom.error(
-      "Unable to read config configuration. Proceed with default config"
+      "Unable to read coverage config configuration. Proceed with default coverage config"
     );
-    branchCoverageEnabled = true;
+    displayInEditor = true;
+    displayInGutter = false;
+    branchCoverage = true;
   }
 
-  return branchCoverageEnabled;
+  return {
+    displayInEditor: displayInEditor,
+    displayInGutter: displayInGutter,
+    branchCoverage: branchCoverage,
+  };
 }
