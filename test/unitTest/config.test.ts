@@ -10,10 +10,27 @@ suite("Config Test Suite", () => {
     // when
     let config = getConfig();
 
+    console.log("config?.covoredColor: {}", config?.coveredColor);
+
     // then
-    assert.strictEqual("rgba(50, 205, 50, 0.2)", config?.coveredColor);
-    assert.strictEqual("rgba(255, 0, 0, 0.2)", config?.uncoveredColor);
-    assert.strictEqual("rgba(255, 255, 0, 0.2)", config?.branchColor);
+    assert.strictEqual("rgba(50, 205, 50, 0.2)", config?.coveredColor.color);
+    assert.strictEqual(
+      "/tmp/rgba(50, 205, 50, 0.2).svg",
+      config?.coveredColor.iconPath
+    );
+
+    assert.strictEqual("rgba(255, 0, 0, 0.2)", config?.uncoveredColor.color);
+    assert.strictEqual(
+      "/tmp/rgba(255, 0, 0, 0.2).svg",
+      config?.uncoveredColor.iconPath
+    );
+
+    assert.strictEqual("rgba(255, 255, 0, 0.2)", config?.branchColor.color);
+    assert.strictEqual(
+      "/tmp/rgba(255, 255, 0, 0.2).svg",
+      config?.branchColor.iconPath
+    );
+
     assert.strictEqual("true", config?.coverageConfig.branchCoverage);
   });
 
@@ -43,9 +60,24 @@ suite("Config Test Suite", () => {
     getConfigurationStub.restore();
 
     // then
-    assert.strictEqual("rgba(50, 205, 50, 0.2)", config?.coveredColor);
-    assert.strictEqual("rgba(255, 0, 0, 0.2)", config?.uncoveredColor);
-    assert.strictEqual("rgba(255, 255, 0, 0.2)", config?.branchColor);
+    assert.strictEqual("rgba(50, 205, 50, 0.2)", config?.coveredColor.color);
+    assert.strictEqual(
+      "/tmp/rgba(50, 205, 50, 0.2).svg",
+      config?.coveredColor.iconPath
+    );
+
+    assert.strictEqual("rgba(255, 0, 0, 0.2)", config?.uncoveredColor.color);
+    assert.strictEqual(
+      "/tmp/rgba(255, 0, 0, 0.2).svg",
+      config?.uncoveredColor.iconPath
+    );
+
+    assert.strictEqual("rgba(255, 255, 0, 0.2)", config?.branchColor.color);
+    assert.strictEqual(
+      "/tmp/rgba(255, 255, 0, 0.2).svg",
+      config?.branchColor.iconPath
+    );
+
     assert.strictEqual(true, config?.coverageConfig.branchCoverage);
   });
 });
