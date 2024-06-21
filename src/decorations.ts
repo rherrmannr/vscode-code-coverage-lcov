@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import { LcovBranch, LcovFile, LcovLine } from "lcov-parse";
 import { custom } from "./log";
 import { getLcovFiles } from "./lcovReport";
-import { Config, getConfig } from "./config";
+import { ColorConfig, Config, getConfig } from "./config";
 
 let appliedDecorationTypes: vscode.TextEditorDecorationType[] = [];
 
@@ -68,25 +68,21 @@ function createDecorationType(
 ) {
   // return uncovored
   if (line.hit === 0) {
-    return vscode.window.createTextEditorDecorationType({
-      backgroundColor: config.uncoveredColor,
-    });
+    return getDecorationType(config, config.uncoveredColor);
   }
+
   // return all covored
   if (
     branches.every((branch) => {
       return branch.taken > 0;
     }) ||
-    !config.branchCoverageEnabled
+    !config.coverageConfig.branchCoverage
   ) {
-    return vscode.window.createTextEditorDecorationType({
-      backgroundColor: config.coveredColor,
-    });
+    return getDecorationType(config, config.coveredColor);
   }
-  // return branch covored
-  return vscode.window.createTextEditorDecorationType({
-    backgroundColor: config.branchColor,
-  });
+
+  // return covored
+  return getDecorationType(config, config.branchColor);
 }
 
 function getLcovFileForEditor(editor: vscode.TextEditor) {
@@ -121,4 +117,18 @@ function createDecorationTypes(
     decorationTypes.set(lcovLine, decorationType);
   });
   return decorationTypes;
+}
+
+function getDecorationType(
+  config: Config,
+  colorConfig: ColorConfig
+): vscode.TextEditorDecorationType {
+  let options: vscode.DecorationRenderOptions = {};
+  if (config.coverageConfig.displayInEditor) {
+    options.backgroundColor = colorConfig.color;
+  }
+  if (config.coverageConfig.displayInGutter) {
+    options.gutterIconPath = colorConfig.iconPath;
+  }
+  return vscode.window.createTextEditorDecorationType(options);
 }

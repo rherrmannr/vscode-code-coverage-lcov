@@ -4,7 +4,7 @@
 
 Code Coverage LCOV is a Visual Studio Code extension that helps you visualize code coverage information from lcov files directly in your editor. The extension provides commands and configuration options to customize the display of covered and uncovered lines, as well as branch coverage.
 
-![Code Coverage LCOV](https://github.com/rherrmannr/vscode-code-coverage-lcov/raw/master/gifs/preview.gif)
+![Code Coverage LCOV](https://github.com/rherrmannr/vscode-code-coverage-lcov/raw/master/media/preview.gif)
 
 ## Features
 
@@ -31,6 +31,12 @@ The extension comes with the following configuration options:
 
 - **Color for Branches**: `code-coverage-lcov.color.branch`
   - Specifies the color for uncovered branches. Default: Yellow `rgba(255, 255, 0, 0.2)`.
+
+- **Show Coverage in Editor**: `code-coverage-lcov.config.displayInEditor`
+  - Specifies wether to show code coverage in the editor. Default: `true`.
+
+- **Show Coverage in Gutter**: `code-coverage-lcov.config.displayInGutter`
+  - Specifies wether to show code coverage in the gutter. Default: `false`.
 
 - **Search Path for LCOV File**: `code-coverage-lcov.path.searchPath`
   - Search path to the lcov file. Default: `**/lcov*`.
@@ -60,6 +66,17 @@ The extension comes with the following configuration options:
 
 7. **Branch Coverage:**
    - Branch coverage can be enabled or disabled using the `code-coverage-lcov.config.branchCoverage` configuration option.
+
+### Coverage Display Options
+
+#### Enable Coverage in Editor:
+ By default, the extension will display coverage information within the editor. You can control this behavior using the `code-coverage-lcov.config.displayInEditor` configuration option.
+
+#### Enable Coverage in Gutter:
+To display code coverage in the gutter, set the `code-coverage-lcov.config.displayInGutter` configuration option to true.
+![Coverage In Gutter](https://github.com/rherrmannr/vscode-code-coverage-lcov/raw/master/media/gutter.png)
+
+Both the editor and gutter coverage displays can be used independently and can be active at the same time, providing flexible options for visualizing code coverage in your workspace.
 
 ## Notes
 

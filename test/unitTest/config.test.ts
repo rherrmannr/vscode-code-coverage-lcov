@@ -14,7 +14,7 @@ suite("Config Test Suite", () => {
     assert.strictEqual("rgba(50, 205, 50, 0.2)", config?.coveredColor);
     assert.strictEqual("rgba(255, 0, 0, 0.2)", config?.uncoveredColor);
     assert.strictEqual("rgba(255, 255, 0, 0.2)", config?.branchColor);
-    assert.strictEqual("true", config?.branchCoverageEnabled);
+    assert.strictEqual("true", config?.coverageConfig.branchCoverage);
   });
 
   test("Get Configuration Fails Test", () => {
@@ -46,6 +46,6 @@ suite("Config Test Suite", () => {
     assert.strictEqual("rgba(50, 205, 50, 0.2)", config?.coveredColor);
     assert.strictEqual("rgba(255, 0, 0, 0.2)", config?.uncoveredColor);
     assert.strictEqual("rgba(255, 255, 0, 0.2)", config?.branchColor);
-    assert.strictEqual(true, config?.branchCoverageEnabled);
+    assert.strictEqual(true, config?.coverageConfig.branchCoverage);
   });
 });
