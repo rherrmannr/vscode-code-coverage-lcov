@@ -1,10 +1,14 @@
 # Change Log
 
+
 ## [1.1.0]
 
 ### Added
   - Added a configuration option to enable/disable coverage in editor. Default is enabled.
   - Added a configuration option to enable/disable coverage in gutter. Default is disabled.
+
+### Fixed
+  - Clean up README.md
 
 ## [1.0.7]
 
