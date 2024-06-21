@@ -73,7 +73,7 @@ The extension comes with the following configuration options:
  By default, the extension will display coverage information within the editor. You can control this behavior using the `code-coverage-lcov.config.displayInEditor` configuration option.
 
 #### Enable Coverage in Gutter:
-To display code coverage in the gutter, set the `code-coverage-lcov.config.displayInGutter` configuration option to true.
+To display code coverage in the gutter, set the `code-coverage-lcov.config.displayInGutter` configuration option to true.  
 ![Coverage In Gutter](https://github.com/rherrmannr/vscode-code-coverage-lcov/raw/master/media/gutter.png)
 
 Both the editor and gutter coverage displays can be used independently and can be active at the same time, providing flexible options for visualizing code coverage in your workspace.
