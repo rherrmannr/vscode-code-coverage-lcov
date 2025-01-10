@@ -93,7 +93,10 @@ function runCoverage() {
 
     // check if file path must be changed to absolute
     if (!path.isAbsolute(searchPath)) {
-      vscode.workspace.findFiles(searchPath).then((files) => {
+      // https://code.visualstudio.com/api/references/vscode-api
+      // pass in null to vscode workspace find files to search all files matched in filepath
+      // even if the filepath is in the workspace files.exclude setting of vscode
+      vscode.workspace.findFiles(searchPath, null).then((files) => {
         if (files.length > 0) {
           activeLcovFile = files[0].fsPath;
           return loadLcovFromFileAndApplyCoverage(resolve, reject);
