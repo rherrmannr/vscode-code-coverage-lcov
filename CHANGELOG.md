@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.1.2]
+  - Allow files excluded from vscode settings to be found
+
 ## [1.1.1]
   - Fixed README.md
 
