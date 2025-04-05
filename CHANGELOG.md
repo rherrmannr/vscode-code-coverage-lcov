@@ -1,5 +1,9 @@
 # Change Log
 
+## [1.1.4]
+  - Fixed broken lcov file https://github.com/rherrmannr/vscode-code-coverage-lcov/issues/16
+  - Added minimum example
+
 ## [1.1.2]
   - Allow files excluded from vscode settings to be found
 
